@@ -1,5 +1,10 @@
 name: Auto-Generate and Close PR
 
+permissions:
+  pull-requests: write
+  contents: write
+
+
 on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight UTC
