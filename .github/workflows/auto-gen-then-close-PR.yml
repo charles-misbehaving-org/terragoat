@@ -1,0 +1,56 @@
+name: Auto-Generate and Close PR
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  create-and-close-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Create new branch
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          BRANCH_NAME="auto-pr-$DATE"
+          git checkout -b $BRANCH_NAME
+
+      - name: Make a small change
+        run: |
+          echo "This is an auto-generated change on $(date)" >> auto_change.txt
+          git add auto_change.txt
+          git commit -m "Auto-generated change"
+
+      - name: Push new branch
+        run: git push origin HEAD
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Auto-generated PR for ${{ github.ref }}"
+          body: "This is an automatically generated PR that will be closed in 4 hours."
+          branch: ${{ github.ref }}
+
+      - name: Schedule PR closure
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = ${{ steps.create_pr.outputs.pull-request-number }};
+            setTimeout(() => {
+              github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.name,
+                pull_number: pr,
+                state: 'closed'
+              });
+            }, 4 * 60 * 60 * 1000);  // 4 hours in milliseconds
