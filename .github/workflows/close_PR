@@ -1,0 +1,26 @@
+name: Close PR
+
+on:
+  workflow_run:
+    workflows: ["Auto-Generate and Close PR"]
+    types:
+      - completed
+
+jobs:
+  close-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for delay
+        run: sleep ${{ env.delay }}
+
+      - name: Close Pull Request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.pulls.update({
+              owner: process.env.repo_owner,
+              repo: process.env.repo_name,
+              pull_number: process.env.pr_number,
+              state: 'closed'
+            });
