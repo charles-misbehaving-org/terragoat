@@ -4,12 +4,10 @@ permissions:
   pull-requests: write
   contents: write
 
-
 on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight UTC
   workflow_dispatch:  # Allows manual triggering of the workflow
-
 
 jobs:
   create-and-close-pr:
@@ -48,16 +46,10 @@ jobs:
           branch: ${{ github.ref }}
 
       - name: Schedule PR closure
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = ${{ steps.create_pr.outputs.pull-request-number }};
-            setTimeout(() => {
-              github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.name,
-                pull_number: pr,
-                state: 'closed'
-              });
-            }, 4 * 60 * 60 * 1000);  // 4 hours in milliseconds
+        run: |
+          echo "pr_number=${{ steps.create_pr.outputs.pull-request-number }}" >> $GITHUB_ENV
+          echo "repo_owner=${{ github.repository_owner }}" >> $GITHUB_ENV
+          echo "repo_name=${{ github.event.repository.name }}" >> $GITHUB_ENV
+          echo "delay=14400" >> $GITHUB_ENV  # 4 hours in seconds
+          gh workflow run close-pr.yml
+
