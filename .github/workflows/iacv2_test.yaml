@@ -20,16 +20,16 @@ jobs:
         uses: actions/checkout@v3
       - name: Scan the repo for vulnerabilities in IaC
         run: |
-          # Required to pass the GITHUB and Lacework (LW) environment variables to use
-          env | grep "GITHUB_\|LW_\|CI_" > env.list
-          cat env.list
-          # Required command based on what you want to scan in the repository
-          echo "SCAN_COMMAND=tf-scan" >> env.list
-          # Required if you are not mounting the volume on /app
-          echo "WORKSPACE=src" >> env.list
-          # if we want to fail the step for any critical failed findings (violations) in the assessment scan
-          # echo "EXIT_FLAG=critical=1" >> env.list 
-          docker run --env-file env.list -v "$(pwd):/app/src" lacework/codesec-iac:latest
+             # Required to pass the GITHUB and Lacework (LW) environment secrets to use
+             env | grep "GITHUB_\|LW_\|CI_" > env.list
+             # Required command based on what you want to scan in the repository
+             echo "SCAN_COMMAND=tf-scan" >> env.list
+             # WORKSPACE is required and must match, or be a subdirectory of, the directory you bind with -v in the subsequent docker command
+             echo "WORKSPACE=/app/src" >> env.list
+             # if we want to fail the step for any critical failed findings (violations) in the assessment scan
+             echo "EXIT_FLAG=critical=1" >> env.list
+             # This line starts our docker container which will perform the scan, we are mounting pwd to /app/src in the container, pwd resolves to the root of the repo you are scanning. 
+             docker run --env-file env.list -v "$(pwd):/app/src" lacework/codesec-iac:latest
         env:
           LW_ACCOUNT: ${{ secrets.LW_ACCOUNT }}
           LW_API_KEY: ${{ secrets.LW_API_KEY }}
