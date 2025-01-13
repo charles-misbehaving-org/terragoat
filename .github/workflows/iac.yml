@@ -43,8 +43,10 @@ jobs:
         run: 
           ls -lha
       - name: Set permissions
-        run: 
-          chmod -R u+w ./terraform
+        run: |
+          chmod -R 777 .
+          mkdir -p .terraform
+          chmod -R 777 .terraform
       - name: Scan the repo for vulnerabilities in IaC
 
         run: |
