@@ -45,6 +45,7 @@ jobs:
 
       - name: Set permissions
         run: |
+          chmod -R 777 .
           mkdir -p .terraform
           chmod -R 777 .terraform
           
