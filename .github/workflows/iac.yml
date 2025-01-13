@@ -44,9 +44,14 @@ jobs:
           ls -lha
       - name: Set permissions
         run: |
-          chmod -R 777 .
+          # Create .terraform directory with more restrictive permissions
           mkdir -p .terraform
-          chmod -R 777 .terraform
+          # Set ownership to the current user
+          sudo chown -R $(id -u):$(id -g) .terraform
+          # Set more restrictive permissions - owner can read/write/execute, group/others can only read
+          chmod -R 744 .terraform
+          # If needed, give specific write permissions to terraform files
+          chmod -R u+w ./terraform
       - name: Scan the repo for vulnerabilities in IaC
 
         run: |
