@@ -49,11 +49,10 @@ jobs:
 
         run: |
              env | grep "GITHUB_\|LW_\|CI_" > env.list
-             echo "SCAN_COMMAND=tf-scan" >> env.list
              echo "WORKSPACE=/app/src" >> env.list
              echo "EXIT_FLAG=critical=1" >> env.list
              cat env.list
-             docker run --env-file env.list -v "$(pwd):/app/src"  -w /app/src lacework/codesec:stable
+             docker run --env-file env.list -v "$(pwd):/app/src"  -w /app/src lacework/codesec:stable lacework iac scan -d /app/src/.
 
         env:
 
