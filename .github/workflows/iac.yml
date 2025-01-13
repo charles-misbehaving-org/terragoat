@@ -51,7 +51,7 @@ jobs:
           # Set more restrictive permissions - owner can read/write/execute, group/others can only read
           chmod -R 744 .terraform
           # If needed, give specific write permissions to terraform files
-          chmod -R u+w ./terraform
+          chmod -R u+w .terraform
       - name: Scan the repo for vulnerabilities in IaC
 
         run: |
