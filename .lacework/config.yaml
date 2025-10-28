@@ -1,0 +1,35 @@
+# This config file enables blocking mode for critical and high severity findings.
+
+# Not all values need to be explicitly set.  
+
+# Set to true to allow the Code Security App to update your PR Status Check
+pr_status_enabled: true
+
+# Maximum allowable findings, above which
+# PR status check will fail
+pr_status_thresholds:
+    critical: 0
+    high: 0
+    medium: 999
+    low: 999
+
+# Force the status check to pass.  Checks will still be run.
+# Effectively the same as raising thresholds to high values.
+pr_status_force_pass_enabled: false
+
+# Set to true if you want Code Security App to add PR comments
+pr_comments_enabled: true
+
+# If set to true, a PR comment will be added, even if
+# the status check passes.
+pr_comments_on_passed_check_enabled: true
+
+#List of the policies to be blocked starting Dec 3rd, 2024:
+
+# https://iherbglobal.atlassian.net/wiki/spaces/TEC/pages/3313729559/Lacework+iacbot+-+Block+mode+policy+scope
+
+# Key Details:
+# • Effective: [Tue Dec 3rd, 2024]
+# • Scope: All new pull requests within devops.* and security*. repositories
+# • Blocking: Critical and High severity findings
+# • Warning Only: Medium and Low severity findings
