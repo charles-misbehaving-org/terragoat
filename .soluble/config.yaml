@@ -18,7 +18,7 @@ pr_status_thresholds:
 pr_status_force_pass_enabled: false
 
 # Set to true if you want Code Security App to add PR comments
-pr_comments_enabled: true
+pr_comments_enabled: false
 
 # If set to true, a PR comment will be added, even if
 # the status check passes.
